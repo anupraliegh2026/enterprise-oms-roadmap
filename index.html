@@ -3,15 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <title>Enterprise OMS Roadmap Dashboard</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:20px;
+    background:#f5f7fa;
+}
+
+h1{
+    color:#d71920;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#d71920;
+    color:white;
+    padding:10px;
+    text-align:left;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+a{
+    color:#0056b3;
+    font-weight:bold;
+    text-decoration:none;
+}
+</style>
+
 </head>
 
 <body>
 
 <h1>Enterprise OMS Roadmap Dashboard</h1>
 
-<div id="output">
-Loading...
-</div>
+<table>
+
+<thead>
+<tr>
+<th>Capability ID</th>
+<th>L3 Capability</th>
+<th>Epic #</th>
+</tr>
+</thead>
+
+<tbody id="roadmapTable">
+</tbody>
+
+</table>
 
 <script>
 
@@ -19,14 +67,33 @@ fetch("data.json")
 .then(response => response.json())
 .then(data => {
 
-document.getElementById("output").innerHTML =
-JSON.stringify(data, null, 2);
+let html = "";
+
+data.forEach(item => {
+
+html += `
+<tr>
+<td>${item.capabilityId}</td>
+<td>${item.l3Capability}</td>
+<td>
+<a href="${item.jiraUrl}" target="_blank">
+${item.epic}
+</a>
+</td>
+</tr>
+`;
+
+});
+
+document.getElementById("roadmapTable").innerHTML = html;
 
 })
 .catch(error => {
 
-document.getElementById("output").innerHTML =
-"ERROR: " + error;
+document.getElementById("roadmapTable").innerHTML =
+"<tr><td colspan='3'>Error loading data</td></tr>";
+
+console.error(error);
 
 });
 
