@@ -3,33 +3,35 @@
 <head>
     <title>Enterprise OMS Roadmap Dashboard</title>
 
+    <meta charset="UTF-8">
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
             background: #f5f7fa;
+            margin: 30px;
         }
 
         h1 {
             color: #d71920;
-        }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
             margin-bottom: 20px;
         }
 
-        select {
-            padding: 8px;
-            min-width: 200px;
+        .toolbar {
+            margin-bottom: 20px;
+        }
+
+        #searchBox {
+            width: 350px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
         }
 
         .card {
             background: white;
-            padding: 20px;
             border-radius: 8px;
+            padding: 20px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.15);
         }
 
@@ -41,25 +43,39 @@
         th {
             background: #d71920;
             color: white;
-            padding: 10px;
             text-align: left;
+            padding: 12px;
         }
 
         td {
-            padding: 8px;
+            padding: 10px;
             border-bottom: 1px solid #ddd;
+        }
+
+        a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
         }
 
         .ready {
             background: #d4edda;
-            padding: 4px 8px;
-            border-radius: 4px;
         }
 
         .progress {
             background: #fff3cd;
-            padding: 4px 8px;
-            border-radius: 4px;
+        }
+
+        .discovery {
+            background: #e2e3e5;
         }
     </style>
 </head>
@@ -68,26 +84,12 @@
 
 <h1>Enterprise OMS Roadmap Dashboard</h1>
 
-<div class="filters">
-    <select>
-        <option>L1 Domain</option>
-    </select>
-
-    <select>
-        <option>L2 Capability Group</option>
-    </select>
-
-    <select>
-        <option>L3 Capability</option>
-    </select>
-
-    <select>
-        <option>Priority</option>
-    </select>
-
-    <select>
-        <option>Implementation Wave</option>
-    </select>
+<div class="toolbar">
+    <input
+        type="text"
+        id="searchBox"
+        placeholder="Search capability, Epic or Capability ID..."
+        onkeyup="filterRows()">
 </div>
 
 <div class="card">
@@ -102,37 +104,85 @@
         </tr>
     </thead>
 
-    <tbody>
-        <tr>
-            <td>CAP-0001</td>
-            <td>Create Order</td>
-            <td>
-                <a href="https://advanceautoparts.atlassian.net">
-                    OMS2-7905
-                </a>
-            </td>
-            <td>
-                <span class="ready">Ready</span>
-            </td>
-        </tr>
-
-        <tr>
-            <td>CAP-0002</td>
-            <td>Store POS Orders</td>
-            <td>
-                <a href="https://advanceautoparts.atlassian.net">
-                    OMS2-7562
-                </a>
-            </td>
-            <td>
-                <span class="progress">In Progress</span>
-            </td>
-        </tr>
+    <tbody id="roadmapTable">
     </tbody>
 
 </table>
 
 </div>
+
+<script>
+
+let roadmapData = [];
+
+function readinessBadge(status) {
+
+    const lower = status.toLowerCase();
+
+    if (lower.includes("ready")) {
+        return '<span class="badge ready">Ready</span>';
+    }
+
+    if (lower.includes("progress")) {
+        return '<span class="badge progress">In Progress</span>';
+    }
+
+    return '<span class="badge discovery">Discovery</span>';
+}
+
+function renderTable(data) {
+
+    const tbody =
+        document.getElementById("roadmapTable");
+
+    tbody.innerHTML = "";
+
+    data.forEach(item => {
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.capabilityId}</td>
+                <td>${item.capability}</td>
+                <td>
+                  <a href="${item.jiraUrl}" target="_blank">
+                    ${item.epic}
+                  </a>
+                </td>
+                <td>${readinessBadge(item.status)}</td>
+            </tr>
+        `;
+    });
+}
+
+function filterRows() {
+
+    const search =
+        document
+          .getElementById("searchBox")
+          .value
+          .toLowerCase();
+
+    const filtered =
+        roadmapData.filter(item =>
+            item.capabilityId.toLowerCase().includes(search) ||
+            item.capability.toLowerCase().includes(search) ||
+            item.epic.toLowerCase().includes(search)
+        );
+
+    renderTable(filtered);
+}
+
+fetch("data.json")
+.then(response => response.json())
+.then(data => {
+    roadmapData = data;
+    renderTable(data);
+})
+.catch(error => {
+    console.error(error);
+});
+
+</script>
 
 </body>
 </html>
