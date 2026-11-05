@@ -22,5 +22,42 @@
     "epic": "OMS2-7562",
     "status": "In Progress",
     "jiraUrl": "https://advanceautoparts.atlassian.net/browse/OMS2-7562"
-  }
+  },
+  {
+  "capabilityId": "CAP-0003",
+  "l1Domain": "Core Orchestration & Ingestion",
+  "l2CapabilityGroup": "Order Capture",
+  "l3Capability": "Inventory Allocation",
+  "priority": "P1",
+  "wave": "Wave 2",
+  "owner": "Anup Kumar",
+  "epic": "OMS2-8800",
+  "status": "Discovery",
+  "jiraUrl": "https://advanceautoparts.atlassian.net/browse/OMS2-8800"
+},
+  {
+  "capabilityId": "CAP-0003",
+  "l1Domain": "Core Orchestration & Ingestion",
+  "l2CapabilityGroup": "Order Capture",
+  "l3Capability": "Inventory Allocation",
+  "priority": "P1",
+  "wave": "Wave 2",
+  "owner": "Anup Kumar",
+  "epic": "OMS2-7563",
+  "status": "In Progress",
+  "jiraUrl": "https://advanceautoparts.atlassian.net/browse/OMS2-8800"
+},
+   {
+  "capabilityId": "CAP-0003",
+  "l1Domain": "Core Orchestration & Ingestion",
+  "l2CapabilityGroup": "Order Capture",
+  "l3Capability": "Inventory Allocation",
+  "priority": "P1",
+  "wave": "Wave 2",
+  "owner": "Anup Kumar",
+  "epic": "OMS2-7566",
+  "status": "In Progress",
+  "jiraUrl": "https://advanceautoparts.atlassian.net/browse/OMS2-8800"
+}
+  
 ]
