@@ -5,6 +5,7 @@
 <title>Enterprise OMS Roadmap Dashboard</title>
 
 <style>
+
 body{
     font-family:Arial,sans-serif;
     margin:20px;
@@ -13,6 +14,23 @@ body{
 
 h1{
     color:#d71920;
+}
+
+.filters{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+select,input{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
+input{
+    min-width:250px;
 }
 
 table{
@@ -33,11 +51,30 @@ td{
     border-bottom:1px solid #ddd;
 }
 
+.ready{
+    background:#d4edda;
+    padding:4px 8px;
+    border-radius:12px;
+}
+
+.progress{
+    background:#fff3cd;
+    padding:4px 8px;
+    border-radius:12px;
+}
+
+.discovery{
+    background:#e2e3e5;
+    padding:4px 8px;
+    border-radius:12px;
+}
+
 a{
     color:#0056b3;
     font-weight:bold;
     text-decoration:none;
 }
+
 </style>
 
 </head>
@@ -46,13 +83,44 @@ a{
 
 <h1>Enterprise OMS Roadmap Dashboard</h1>
 
+<div class="filters">
+
+<select id="domainFilter">
+<option value="">All Domains</option>
+</select>
+
+<select id="groupFilter">
+<option value="">All Groups</option>
+</select>
+
+<select id="priorityFilter">
+<option value="">All Priorities</option>
+</select>
+
+<select id="waveFilter">
+<option value="">All Waves</option>
+</select>
+
+<input
+id="searchBox"
+placeholder="Search..."
+>
+
+</div>
+
 <table>
 
 <thead>
 <tr>
 <th>Capability ID</th>
+<th>L1 Domain</th>
+<th>L2 Capability Group</th>
 <th>L3 Capability</th>
+<th>Priority</th>
+<th>Wave</th>
+<th>Owner</th>
 <th>Epic #</th>
+<th>Status</th>
 </tr>
 </thead>
 
@@ -63,39 +131,164 @@ a{
 
 <script>
 
-fetch("data.json")
-.then(response => response.json())
-.then(data => {
+let roadmapData=[];
 
-let html = "";
+function badge(status){
 
-data.forEach(item => {
+if(status==="Ready"){
+return '<span class="ready">Ready</span>';
+}
 
-html += `
+if(status==="In Progress"){
+return '<span class="progress">In Progress</span>';
+}
+
+return '<span class="discovery">Discovery</span>';
+
+}
+
+function render(rows){
+
+let html="";
+
+rows.forEach(item=>{
+
+html+=`
 <tr>
 <td>${item.capabilityId}</td>
+<td>${item.l1Domain}</td>
+<td>${item.l2CapabilityGroup}</td>
 <td>${item.l3Capability}</td>
+<td>${item.priority}</td>
+<td>${item.wave}</td>
+<td>${item.owner}</td>
 <td>
 <a href="${item.jiraUrl}" target="_blank">
 ${item.epic}
 </a>
 </td>
+<td>${badge(item.status)}</td>
 </tr>
 `;
 
 });
 
-document.getElementById("roadmapTable").innerHTML = html;
+document.getElementById("roadmapTable").innerHTML=html;
 
-})
-.catch(error => {
+}
 
-document.getElementById("roadmapTable").innerHTML =
-"<tr><td colspan='3'>Error loading data</td></tr>";
+function populateFilters(){
 
-console.error(error);
+let domains=[
+...new Set(
+roadmapData.map(x=>x.l1Domain)
+)
+];
+
+let groups=[
+...new Set(
+roadmapData.map(x=>x.l2CapabilityGroup)
+)
+];
+
+let priorities=[
+...new Set(
+roadmapData.map(x=>x.priority)
+)
+];
+
+let waves=[
+...new Set(
+roadmapData.map(x=>x.wave)
+)
+];
+
+addOptions("domainFilter",domains);
+addOptions("groupFilter",groups);
+addOptions("priorityFilter",priorities);
+addOptions("waveFilter",waves);
+
+}
+
+function addOptions(id,data){
+
+const ddl=document.getElementById(id);
+
+data.forEach(x=>{
+
+let option=document.createElement("option");
+
+option.value=x;
+option.text=x;
+
+ddl.add(option);
 
 });
+
+}
+
+function applyFilters(){
+
+let domain=
+document.getElementById("domainFilter").value;
+
+let group=
+document.getElementById("groupFilter").value;
+
+let priority=
+document.getElementById("priorityFilter").value;
+
+let wave=
+document.getElementById("waveFilter").value;
+
+let search=
+document
+.getElementById("searchBox")
+.value
+.toLowerCase();
+
+let filtered=
+roadmapData.filter(item=>
+
+(domain==="" || item.l1Domain===domain)
+&&
+(group==="" || item.l2CapabilityGroup===group)
+&&
+(priority==="" || item.priority===priority)
+&&
+(wave==="" || item.wave===wave)
+&&
+(
+item.capabilityId.toLowerCase().includes(search)
+||
+item.l3Capability.toLowerCase().includes(search)
+||
+item.epic.toLowerCase().includes(search)
+)
+
+);
+
+render(filtered);
+
+}
+
+fetch("data.json")
+.then(r=>r.json())
+.then(data=>{
+
+roadmapData=data;
+
+populateFilters();
+
+render(data);
+
+});
+
+document.addEventListener("change",applyFilters);
+
+document
+.getElementById("searchBox")
+.addEventListener("keyup",applyFilters);
 
 </script>
 
