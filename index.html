@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Enterprise OMS Roadmap Dashboard</title>
 
 <style>
+
 body{
-    font-family:Arial, sans-serif;
-    margin:20px;
+    font-family: Arial, sans-serif;
     background:#f5f7fa;
+    margin:20px;
 }
 
 h1{
@@ -17,15 +20,15 @@ h1{
 
 .toolbar{
     display:flex;
-    gap:10px;
     flex-wrap:wrap;
+    gap:10px;
     margin-bottom:20px;
 }
 
 select,input{
     padding:8px;
     border:1px solid #ccc;
-    border-radius:4px;
+    border-radius:5px;
 }
 
 input{
@@ -34,9 +37,9 @@ input{
 
 .card{
     background:white;
-    padding:20px;
     border-radius:10px;
-    box-shadow:0 2px 4px rgba(0,0,0,.15);
+    padding:20px;
+    box-shadow:0 2px 5px rgba(0,0,0,.15);
 }
 
 table{
@@ -47,13 +50,17 @@ table{
 th{
     background:#d71920;
     color:white;
-    padding:10px;
+    padding:12px;
     text-align:left;
 }
 
 td{
     padding:10px;
     border-bottom:1px solid #ddd;
+}
+
+tr:hover{
+    background:#f1f1f1;
 }
 
 .badge{
@@ -74,8 +81,14 @@ td{
 .discovery{
     background:#e2e3e5;
 }
-</style>
 
+a{
+    color:#0056b3;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+</style>
 </head>
 
 <body>
@@ -85,25 +98,26 @@ td{
 <div class="toolbar">
 
 <select id="domainFilter">
-    <option value="">All Domains</option>
+<option value="">All Domains</option>
 </select>
 
 <select id="groupFilter">
-    <option value="">All Capability Groups</option>
+<option value="">All Capability Groups</option>
 </select>
 
 <select id="priorityFilter">
-    <option value="">All Priorities</option>
+<option value="">All Priorities</option>
 </select>
 
 <select id="waveFilter">
-    <option value="">All Waves</option>
+<option value="">All Waves</option>
 </select>
 
 <input
 id="searchBox"
+type="text"
 placeholder="Search..."
-onkeyup="applyFilters()">
+>
 
 </div>
 
@@ -117,3 +131,5 @@ onkeyup="applyFilters()">
 <th>L1 Domain</th>
 <th>L2 Capability Group</th>
 <th>L3 Capability</th>
+<th>Priority</th>
+<th>Wave</th>
