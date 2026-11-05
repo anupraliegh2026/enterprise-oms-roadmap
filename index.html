@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Enterprise OMS Roadmap Dashboard</title>
 
 <style>
-
 body{
-    font-family: Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:#f5f7fa;
     margin:20px;
 }
@@ -19,38 +16,24 @@ h1{
 }
 
 .toolbar{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
     margin-bottom:20px;
 }
 
-select,input{
+#searchBox{
     padding:8px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
-
-input{
-    min-width:300px;
-}
-
-.card{
-    background:white;
-    border-radius:10px;
-    padding:20px;
-    box-shadow:0 2px 5px rgba(0,0,0,.15);
+    width:300px;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
+    background:white;
 }
 
 th{
     background:#d71920;
     color:white;
-    padding:12px;
+    padding:10px;
     text-align:left;
 }
 
@@ -59,77 +42,88 @@ td{
     border-bottom:1px solid #ddd;
 }
 
-tr:hover{
-    background:#f1f1f1;
-}
-
-.badge{
-    padding:4px 10px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:bold;
-}
-
 .ready{
     background:#d4edda;
+    padding:4px 8px;
+    border-radius:12px;
 }
 
 .progress{
     background:#fff3cd;
+    padding:4px 8px;
+    border-radius:12px;
 }
 
 .discovery{
     background:#e2e3e5;
+    padding:4px 8px;
+    border-radius:12px;
 }
-
-a{
-    color:#0056b3;
-    text-decoration:none;
-    font-weight:bold;
-}
-
 </style>
-</head>
 
+</head>
 <body>
 
 <h1>Enterprise OMS Roadmap Dashboard</h1>
 
 <div class="toolbar">
-
-<select id="domainFilter">
-<option value="">All Domains</option>
-</select>
-
-<select id="groupFilter">
-<option value="">All Capability Groups</option>
-</select>
-
-<select id="priorityFilter">
-<option value="">All Priorities</option>
-</select>
-
-<select id="waveFilter">
-<option value="">All Waves</option>
-</select>
-
-<input
-id="searchBox"
-type="text"
-placeholder="Search..."
->
-
+    <input
+        id="searchBox"
+        placeholder="Search..."
+        onkeyup="filterRows()">
 </div>
-
-<div class="card">
 
 <table>
 
 <thead>
 <tr>
-<th>Capability ID</th>
-<th>L1 Domain</th>
-<th>L2 Capability Group</th>
-<th>L3 Capability</th>
-<th>Priority</th>
-<th>Wave</th>
+    <th>Capability ID</th>
+    <th>L1 Domain</th>
+    <th>L2 Capability Group</th>
+    <th>L3 Capability</th>
+    <th>Epic #</th>
+    <th>Status</th>
+</tr>
+</thead>
+
+<tbody id="roadmapTable">
+</tbody>
+
+</table>
+
+<script>
+
+let roadmapData=[];
+
+function badge(status){
+
+    if(status==="Ready"){
+        return '<span class="ready">Ready</span>';
+    }
+
+    if(status==="In Progress"){
+        return '<span class="progress">In Progress</span>';
+    }
+
+    return '<span class="discovery">Discovery</span>';
+
+}
+
+function renderTable(rows){
+
+    const table=
+        document.getElementById("roadmapTable");
+
+    table.innerHTML="";
+
+    rows.forEach(item=>{
+
+        table.innerHTML+=`
+        <tr>
+            <td>${item.capabilityId}</td>
+            <td>${item.l1Domain}</td>
+            <td>${item.l2CapabilityGroup}</td>
+            <td>${item.l3Capability}</td>
+            <td>
+                <a href="${item.jiraUrl}" target="_blank">
+                    ${item.
