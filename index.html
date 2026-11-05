@@ -131,166 +131,198 @@ placeholder="Search..."
 
 <script>
 
-let roadmapData=[];
+let roadmapData = [];
 
 function badge(status){
 
-if(status==="Ready"){
-return '<span class="ready">Ready</span>';
-}
+    if(!status){
+        return "";
+    }
 
-if(status==="In Progress"){
-return '<span class="progress">In Progress</span>';
-}
+    const value = status.toLowerCase();
 
-return '<span class="discovery">Discovery</span>';
+    if(value.includes("ready")){
+        return '<span class="ready">Ready</span>';
+    }
 
+    if(value.includes("progress")){
+        return '<span class="progress">In Progress</span>';
+    }
+
+    return '<span class="discovery">Discovery</span>';
 }
 
 function render(rows){
 
-let html="";
+    let html = "";
 
-rows.forEach(item=>{
+    rows.forEach(item => {
 
-html+=`
-<tr>
-<td>${item.capabilityId}</td>
-<td>${item.l1Domain}</td>
-<td>${item.l2CapabilityGroup}</td>
-<td>${item.l3Capability}</td>
-<td>${item.priority}</td>
-<td>${item.wave}</td>
-<td>${item.owner}</td>
-<td>
-<a href="${item.jiraUrl}" target="_blank">
-${item.epic}
-</a>
-</td>
-<td>${badge(item.status)}</td>
-</tr>
-`;
+        html += `
+        <tr>
+            <td>${item["Capability ID"] || ""}</td>
+            <td>${item["L1 Domain"] || ""}</td>
+            <td>${item["L2 Capability Group"] || ""}</td>
+            <td>${item["L3 Capability"] || ""}</td>
+            <td>${item["Priority"] || ""}</td>
+            <td>${item["Implementation Wave"] || ""}</td>
+            <td>${item["Owner Name"] || ""}</td>
+            <td>
+                <a href="${item["Jira URL"] || "#"}" target="_blank">
+                    ${item["Epic #"] || ""}
+                </a>
+            </td>
+            <td>${badge(item["Readiness Category"])}</td>
+        </tr>
+        `;
+    });
 
-});
+    document.getElementById("roadmapTable").innerHTML = html;
+}
 
-document.getElementById("roadmapTable").innerHTML=html;
+function addOptions(id,list){
 
+    const ddl = document.getElementById(id);
+
+    list.forEach(x => {
+
+        let opt = document.createElement("option");
+        opt.value = x;
+        opt.text = x;
+
+        ddl.appendChild(opt);
+
+    });
 }
 
 function populateFilters(){
 
-let domains=[
-...new Set(
-roadmapData.map(x=>x.l1Domain)
-)
-];
+    addOptions(
+        "domainFilter",
+        [...new Set(roadmapData.map(x => x["L1 Domain"]).filter(Boolean))]
+    );
 
-let groups=[
-...new Set(
-roadmapData.map(x=>x.l2CapabilityGroup)
-)
-];
+    addOptions(
+        "groupFilter",
+        [...new Set(roadmapData.map(x => x["L2 Capability Group"]).filter(Boolean))]
+    );
 
-let priorities=[
-...new Set(
-roadmapData.map(x=>x.priority)
-)
-];
+    addOptions(
+        "priorityFilter",
+        [...new Set(roadmapData.map(x => x["Priority"]).filter(Boolean))]
+    );
 
-let waves=[
-...new Set(
-roadmapData.map(x=>x.wave)
-)
-];
-
-addOptions("domainFilter",domains);
-addOptions("groupFilter",groups);
-addOptions("priorityFilter",priorities);
-addOptions("waveFilter",waves);
-
-}
-
-function addOptions(id,data){
-
-const ddl=document.getElementById(id);
-
-data.forEach(x=>{
-
-let option=document.createElement("option");
-
-option.value=x;
-option.text=x;
-
-ddl.add(option);
-
-});
+    addOptions(
+        "waveFilter",
+        [...new Set(roadmapData.map(x => x["Implementation Wave"]).filter(Boolean))]
+    );
 
 }
 
 function applyFilters(){
 
-let domain=
-document.getElementById("domainFilter").value;
+    const domain =
+        document.getElementById("domainFilter").value;
 
-let group=
-document.getElementById("groupFilter").value;
+    const group =
+        document.getElementById("groupFilter").value;
 
-let priority=
-document.getElementById("priorityFilter").value;
+    const priority =
+        document.getElementById("priorityFilter").value;
 
-let wave=
-document.getElementById("waveFilter").value;
+    const wave =
+        document.getElementById("waveFilter").value;
 
-let search=
-document
-.getElementById("searchBox")
-.value
-.toLowerCase();
+    const search =
+        document.getElementById("searchBox")
+        .value
+        .toLowerCase();
 
-let filtered=
-roadmapData.filter(item=>
+    const filtered =
+        roadmapData.filter(item =>
 
-(domain==="" || item.l1Domain===domain)
-&&
-(group==="" || item.l2CapabilityGroup===group)
-&&
-(priority==="" || item.priority===priority)
-&&
-(wave==="" || item.wave===wave)
-&&
-(
-item.capabilityId.toLowerCase().includes(search)
-||
-item.l3Capability.toLowerCase().includes(search)
-||
-item.epic.toLowerCase().includes(search)
-)
+            (domain === "" || item["L1 Domain"] === domain)
+            &&
+            (group === "" || item["L2 Capability Group"] === group)
+            &&
+            (priority === "" || item["Priority"] === priority)
+            &&
+            (wave === "" || item["Implementation Wave"] === wave)
+            &&
+            (
+                JSON.stringify(item)
+                .toLowerCase()
+                .includes(search)
+            )
 
-);
+        );
 
-render(filtered);
+    render(filtered);
 
 }
 
-fetch("data.json")
-.then(r=>r.json())
-.then(data=>{
+async function loadCSV(){
 
-roadmapData=data;
+    const response = await fetch(
+        "https://raw.githubusercontent.com/anupraliegh2026/enterprise-oms-roadmap/refs/heads/main/Capability_Master.csv"
+    );
 
-populateFilters();
+    const csv = await response.text();
 
-render(data);
+    const lines = csv.split("\n");
 
-});
+    const headers =
+        lines[0]
+        .split(",")
+        .map(h => h.trim());
 
-document.addEventListener("change",applyFilters);
+    const data = [];
+
+    for(let i=1;i<lines.length;i++){
+
+        if(!lines[i].trim()){
+            continue;
+        }
+
+        const values = lines[i].split(",");
+
+        const obj = {};
+
+        headers.forEach((header,index)=>{
+
+            obj[header] =
+                values[index]
+                ? values[index].replaceAll('"','').trim()
+                : "";
+
+        });
+
+        data.push(obj);
+
+    }
+
+    roadmapData = data;
+
+    populateFilters();
+
+    render(data);
+
+}
+
+loadCSV();
+
+document.addEventListener(
+    "change",
+    applyFilters
+);
 
 document
 .getElementById("searchBox")
-.addEventListener("keyup",applyFilters);
+.addEventListener(
+    "keyup",
+    applyFilters
+);
 
 </script>
-
 </body>
 </html>
