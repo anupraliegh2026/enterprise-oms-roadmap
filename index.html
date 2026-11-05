@@ -2,19 +2,137 @@
 <html>
 <head>
     <title>Enterprise OMS Roadmap Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f7fa;
+        }
+
+        h1 {
+            color: #d71920;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 8px;
+            min-width: 200px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #d71920;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .ready {
+            background: #d4edda;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .progress {
+            background: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
+
 <body>
 
 <h1>Enterprise OMS Roadmap Dashboard</h1>
 
-<p>Version 1.0</p>
+<div class="filters">
+    <select>
+        <option>L1 Domain</option>
+    </select>
 
-<p>Roadmap dashboard is under construction.</p>
+    <select>
+        <option>L2 Capability Group</option>
+    </select>
 
-<p>
-Data Source:
-Enterprise_OMS_Roadmap_Capability_Index_v4.xlsx
-</p>
+    <select>
+        <option>L3 Capability</option>
+    </select>
+
+    <select>
+        <option>Priority</option>
+    </select>
+
+    <select>
+        <option>Implementation Wave</option>
+    </select>
+</div>
+
+<div class="card">
+
+<table>
+    <thead>
+        <tr>
+            <th>Capability ID</th>
+            <th>L3 Capability</th>
+            <th>Epic #</th>
+            <th>Readiness</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>CAP-0001</td>
+            <td>Create Order</td>
+            <td>
+                <a href="https://advanceautoparts.atlassian.net">
+                    OMS2-7905
+                </a>
+            </td>
+            <td>
+                <span class="ready">Ready</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>CAP-0002</td>
+            <td>Store POS Orders</td>
+            <td>
+                <a href="https://advanceautoparts.atlassian.net">
+                    OMS2-7562
+                </a>
+            </td>
+            <td>
+                <span class="progress">In Progress</span>
+            </td>
+        </tr>
+    </tbody>
+
+</table>
+
+</div>
 
 </body>
 </html>
