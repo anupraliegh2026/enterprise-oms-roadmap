@@ -261,51 +261,37 @@ function applyFilters(){
 
 }
 
-async function loadCSV(){
+function loadCSV(){
 
-    const response = await fetch(
-        "https://raw.githubusercontent.com/anupraliegh2026/enterprise-oms-roadmap/refs/heads/main/Capability_Master.csv"
-    );
+Papa.parse(
+"https://raw.githubusercontent.com/anupraliegh2026/enterprise-oms-roadmap/main/Capability_Master.csv",
+{
+    download: true,
+    header: true,
+    skipEmptyLines: true,
 
-    const csv = await response.text();
+    complete: function(results){
 
-    const lines = csv.split("\n");
+        roadmapData = results.data;
 
-    const headers =
-        lines[0]
-        .split(",")
-        .map(h => h.trim());
+        populateFilters();
 
-    const data = [];
+        render(results.data);
 
-    for(let i=1;i<lines.length;i++){
+        console.log(
+            "Rows Loaded:",
+            results.data.length
+        );
 
-        if(!lines[i].trim()){
-            continue;
-        }
+    },
 
-        const values = lines[i].split(",");
+    error: function(error){
 
-        const obj = {};
-
-        headers.forEach((header,index)=>{
-
-            obj[header] =
-                values[index]
-                ? values[index].replaceAll('"','').trim()
-                : "";
-
-        });
-
-        data.push(obj);
+        console.error(error);
 
     }
 
-    roadmapData = data;
-
-    populateFilters();
-
-    render(data);
+});
 
 }
 
