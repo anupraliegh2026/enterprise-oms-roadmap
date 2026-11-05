@@ -1,0 +1,16 @@
+[
+  {
+    "capabilityId": "CAP-0001",
+    "capability": "Create Order",
+    "epic": "OMS2-7905",
+    "status": "Ready",
+    "jiraUrl": "https://advanceautoparts.atlassian.net/browse/OMS2-7905"
+  },
+  {
+    "capabilityId": "CAP-0002",
+    "capability": "Store POS Orders",
+    "epic": "OMS2-7562",
+    "status": "In Progress",
+    "jiraUrl": "https://advanceautoparts.atlassian.net/browse/OMS2-7562"
+  }
+]
