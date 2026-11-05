@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Enterprise OMS Roadmap Dashboard</title>
+</head>
+
+<body>
+
+<h1>Enterprise OMS Roadmap Dashboard</h1>
+
+<div id="output">
+Loading...
+</div>
+
+<script>
+
+fetch("data.json")
+.then(response => response.json())
+.then(data => {
+
+document.getElementById("output").innerHTML =
+JSON.stringify(data, null, 2);
+
+})
+.catch(error => {
+
+document.getElementById("output").innerHTML =
+"ERROR: " + error;
+
+});
+
+</script>
+
+</body>
+</html>
