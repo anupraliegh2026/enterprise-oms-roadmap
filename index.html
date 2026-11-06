@@ -278,6 +278,11 @@ function populateFilters(){
         [...new Set(roadmapData.map(x => x["Implementation Wave"]).filter(Boolean))]
     );
 
+    addOptions(
+        "ownerFilter",
+        [...new Set(roadmapData.map(x => x["Owner Name"]).filter(Boolean))]
+     );
+
 }
 
 function applyFilters(){
