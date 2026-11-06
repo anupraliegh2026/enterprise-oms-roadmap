@@ -259,9 +259,7 @@ return '';
             class="${cssClass}"
             style="text-decoration:none;color:black;font-weight:bold;"
         >
-            ${ticket
-   .match(/OMS2-\d+/g)
-   ?.join("<br>") || ticket}
+            ${ticket}
         </a>
     `;
 }
