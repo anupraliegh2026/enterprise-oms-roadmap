@@ -3,44 +3,464 @@
 <head>
 <meta charset="UTF-8">
 <title>Enterprise OMS Roadmap Dashboard</title>
+
 <style>
-body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:12px;margin:12px;background:#f5f7fa;}
-h1{color:#d71920;}
-.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
-select,input{padding:8px;border:1px solid #ccc;border-radius:4px;}
-input{min-width:250px;}
-table{width:100%;border-collapse:collapse;background:white;}
-th{background:#d71920;color:white;padding:6px;text-align:left;font-size:11px;line-height:1.2;position:sticky;top:0;z-index:10;}
-td{padding:6px;border-bottom:1px solid #ddd;font-size:11px;line-height:1.2;}
-tbody tr:nth-child(even){background:#fafafa;}
-.ready{background:#d4edda;padding:4px 8px;border-radius:12px;white-space:nowrap;}
-.progress{background:#fff3cd;padding:4px 8px;border-radius:12px;white-space:nowrap;}
-.discovery{background:#e2e3e5;padding:4px 8px;border-radius:12px;white-space:nowrap;}
-.needEpic{background:#f8d7da;color:#721c24;padding:4px 8px;border-radius:12px;white-space:nowrap;font-weight:bold;}
-a{color:#0056b3;font-weight:bold;text-decoration:none;}
+
+body{
+    font-family:"Segoe UI", Tahoma, Arial, sans-serif;
+    font-size:12px;
+    margin:12px;
+    background:#f5f7fa;
+}
+
+h1{
+    color:#d71920;
+}
+
+.filters{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+select,input{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
+input{
+    min-width:250px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#d71920;
+    color:white;
+    padding:6px;
+    text-align:left;
+    font-size:11px;
+    line-height:1.2;
+    position: sticky;
+top: 0;
+z-index: 10;
+}
+
+td{
+    padding:6px;
+    border-bottom:1px solid #ddd;
+    font-size:11px;
+    line-height:1.2;
+}
+    tbody tr:nth-child(even){
+    background:#fafafa;
+}
+
+.ready{
+    background:#d4edda;
+    padding:4px 8px;
+    border-radius:12px;
+    white-space: nowrap;
+}
+
+.progress{
+    background:#fff3cd;
+    padding:4px 8px;
+    border-radius:12px;
+    white-space: nowrap;
+}
+
+.discovery{
+    background:#e2e3e5;
+    padding:4px 8px;
+    border-radius:12px;
+    white-space: nowrap;
+}
+
+    .needEpic{
+    background:#f8d7da;
+    color:#721c24;
+    padding:4px 8px;
+    border-radius:12px;
+    white-space:nowrap;
+    font-weight:bold;
+}
+
+a{
+    color:#0056b3;
+    font-weight:bold;
+    text-decoration:none;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-</head><body>
+</head>
+
+<body>
+
 <h1>Enterprise OMS Roadmap Dashboard</h1>
+
 <div class="filters">
-<select id="domainFilter"><option value="">L1 All Domains</option></select>
-<select id="groupFilter"><option value="">All L2 capability Groups</option></select>
-<select id="capabilityFilter"><option value="">All L3 Capabilities</option></select>
-<select id="priorityFilter"><option value="">All Priorities</option></select>
-<select id="waveFilter"><option value="">All Waves</option></select>
-<select id="ownerFilter"><option value="">All Owners</option></select>
-<input id="searchBox" placeholder="Search...">
+
+<select id="domainFilter">
+<option value="">L1 All Domains</option>
+</select>
+
+<select id="groupFilter">
+<option value="">All L2 capability Groups</option>
+</select>
+
+<select id="capabilityFilter">
+<option value="">All L3 Capabilities</option>
+</select>   
+    
+
+<select id="priorityFilter">
+<option value="">All Priorities</option>
+</select>
+
+<select id="waveFilter">
+<option value="">All Waves</option>
+</select>
+
+<select id="ownerFilter">
+<option value="">All Owners</option>
+</select>   
+
+<input
+id="searchBox"
+placeholder="Search..."
+>
+
 </div>
-<table><thead><tr><th>L1 Domain</th><th>L2 Capability Group</th><th>L3 Capability</th><th>L4 Process Step</th><th>L5 System Activity</th><th>Priority</th><th>Implementation Wave</th><th>Readiness</th><th>Epic #</th><th>Epic Status</th><th>Owner Name</th></tr></thead><tbody id="roadmapTable"></tbody></table>
+
+<table>
+
+<thead>
+<tr>
+<th>L1 Domain</th>
+<th>L2 Capability Group</th>
+<th>L3 Capability</th>
+<th>L4 Process Step</th>
+<th>L5 System Activity</th>
+<th>Priority</th>
+<th>Implementation Wave</th>
+<th>Readiness</th>
+<th>Epic #</th>
+<th>Epic Status</th>
+<th>Owner Name</th>
+</tr>
+</thead>
+
+<tbody id="roadmapTable">
+</tbody>
+
+</table>
+
 <script>
-let roadmapData=[];
-function badge(status){if(!status)return '';const v=status.toLowerCase();if(v.includes('ready'))return '<span class="ready">Ready</span>';if(v.includes('progress'))return '<span class="progress">In Progress</span>';return '<span class="discovery">Discovery</span>';}
-function epicStatusBadge(status){if(!status)return '';const v=status.toLowerCase();if(v.includes('closed')||v.includes('done'))return '<span class="ready">Closed</span>';if(v.includes('in progress'))return '<span class="progress">In Progress</span>';if(v.includes('backlog'))return '<span class="discovery">Backlog</span>';if(v.includes('to do'))return '<span class="discovery">To Do</span>';if(v.includes('awaiting approval'))return '<span class="progress">Awaiting Approval</span>';return '';}
-function jiraTicketBadge(ticket,status,jiraUrl){if(!ticket||ticket.trim()===''||ticket.toLowerCase().includes('need epic'))return '<span class="needEpic">Need Epic</span>';let css='discovery';const v=(status||'').toLowerCase();if(v.includes('closed'))css='ready';else if(v.includes('in progress')||v.includes('awaiting approval'))css='progress';const ticketList=ticket.match(/OMS2-\d+/g)||[ticket];return ticketList.map(t=>`<div style="margin:2px 0;"><a href="${jiraUrl}" target="_blank" class="${css}" style="text-decoration:none;color:black;font-weight:bold;display:inline-block;">${t}</a></div>`).join('');}
-function render(rows){let html='';rows.forEach(item=>{html+=`<tr><td>${item['L1 Domain']||''}</td><td>${item['L2 Capability Group']||''}</td><td>${item['L3 Capability']||''}</td><td>${item['L4 Process Step']||''}</td><td title="${item['L5 System Activity']||''}">${item['L5 System Activity']||''}</td><td>${item['Priority']||''}</td><td>${item['Implementation Wave']||''}</td><td>${badge(item['Readiness Category']||'')}</td><td>${jiraTicketBadge(item['Epic #']||'',item['Epic Status']||'',item['Jira URL']||'#')}</td><td>${epicStatusBadge(item['Epic Status']||'')}</td><td>${item['Owner Name']||''}</td></tr>`});document.getElementById('roadmapTable').innerHTML=html;}
-function addOptions(id,list){const ddl=document.getElementById(id);list.forEach(x=>{let o=document.createElement('option');o.value=x;o.text=x;ddl.appendChild(o);});}
-function populateFilters(){addOptions('domainFilter',[...new Set(roadmapData.map(x=>x['L1 Domain']).filter(Boolean))]);addOptions('groupFilter',[...new Set(roadmapData.map(x=>x['L2 Capability Group']).filter(Boolean))]);addOptions('capabilityFilter',[...new Set(roadmapData.map(x=>x['L3 Capability']).filter(Boolean))]);addOptions('priorityFilter',[...new Set(roadmapData.map(x=>x['Priority']).filter(Boolean))]);addOptions('waveFilter',[...new Set(roadmapData.map(x=>x['Implementation Wave']).filter(Boolean))]);addOptions('ownerFilter',[...new Set(roadmapData.map(x=>x['Owner Name']).filter(Boolean))]);}
-function applyFilters(){const domain=document.getElementById('domainFilter').value;const group=document.getElementById('groupFilter').value;const priority=document.getElementById('priorityFilter').value;const wave=document.getElementById('waveFilter').value;const capability=document.getElementById('capabilityFilter').value;const owner=document.getElementById('ownerFilter').value;const search=document.getElementById('searchBox').value.toLowerCase();const filtered=roadmapData.filter(item=>(domain===''||item['L1 Domain']===domain)&&(group===''||item['L2 Capability Group']===group)&&(priority===''||item['Priority']===priority)&&(wave===''||item['Implementation Wave']===wave)&&(capability===''||item['L3 Capability']===capability)&&(owner===''||item['Owner Name']===owner)&&JSON.stringify(item).toLowerCase().includes(search));render(filtered);}
-function loadCSV(){Papa.parse('https://raw.githubusercontent.com/anupraliegh2026/enterprise-oms-roadmap/main/Capability_Master.csv',{download:true,header:true,skipEmptyLines:true,complete:function(results){roadmapData=results.data;populateFilters();render(results.data);},error:function(error){console.error(error);}});}
-loadCSV();document.addEventListener('change',applyFilters);document.getElementById('searchBox').addEventListener('keyup',applyFilters);
-</script></body></html>
+
+let roadmapData = [];
+
+function badge(status){
+
+    if(!status){
+        return "";
+    }
+
+    const value = status.toLowerCase();
+
+    if(value.includes("ready")){
+        return '<span class="ready">Ready</span>';
+    }
+
+    if(value.includes("progress")){
+        return '<span class="progress">In Progress</span>';
+    }
+
+    return '<span class="discovery">Discovery</span>';
+}
+    function epicStatusBadge(status){
+
+    if(!status){
+        return "";
+    }
+
+    const value = status.toLowerCase();
+
+    if(value.includes("closed") || value.includes("done")){
+        return '<span class="ready">Closed</span>';
+    }
+
+    if(value.includes("in progress")){
+        return '<span class="progress">In Progress</span>';
+    }
+
+    if(value.includes("backlog")){
+        return '<span class="discovery">Backlog</span>';
+    }
+
+    if(value.includes("to do")){
+    return '<span class="discovery">To Do</span>';
+}
+
+if(value.includes("awaiting approval")){
+    return '<span class="progress">Awaiting Approval</span>';
+}
+
+return '';
+
+}
+
+    function jiraTicketBadge(ticket,status,jiraUrl){
+
+    if(
+    !ticket ||
+    ticket.trim() === "" ||
+    ticket.toLowerCase().includes("need epic")
+){
+    return `
+        <span class="needEpic">
+            Need Epic
+        </span>
+    `;
+}
+
+    let cssClass = "discovery";
+
+    const value =
+        (status || "").toLowerCase();
+
+    if(value.includes("closed")){
+        cssClass = "ready";
+    }
+    else if(value.includes("in progress")){
+        cssClass = "progress";
+    }
+    else if(value.includes("backlog")){
+        cssClass = "discovery";
+    }
+    else if(value.includes("to do")){
+        cssClass = "discovery";
+    }
+    else if(value.includes("awaiting approval")){
+        cssClass = "progress";
+    }
+
+   const ticketList =
+    ticket.match(/OMS2-\d+/g) || [ticket];
+
+return ticketList.map(t => `
+    <div style="margin:2px 0;">
+        <a
+            href="${jiraUrl}"
+            target="_blank"
+            class="${cssClass}"
+            style="
+                text-decoration:none;
+                color:black;
+                font-weight:bold;
+                display:inline-block;
+            "
+        >
+            ${t}
+        </a>
+    </div>
+`).join("");
+    `;
+}
+
+function render(rows){
+
+    let html = "";
+
+    rows.forEach(item => {
+
+        html += `
+      <tr>
+<td>${item["L1 Domain"] || ""}</td>
+<td>${item["L2 Capability Group"] || ""}</td>
+<td>${item["L3 Capability"] || ""}</td>
+<td>${item["L4 Process Step"] || ""}</td>
+<td title="${item["L5 System Activity"] || ""}">
+${item["L5 System Activity"] || ""}
+</td>
+<td>${item["Priority"] || ""}</td>
+<td>${item["Implementation Wave"] || ""}</td>
+<td>${badge(item["Readiness Category"] || "")}</td>
+
+<td>
+${jiraTicketBadge(
+    item["Epic #"] || "",
+    item["Epic Status"] || "",
+    item["Jira URL"] || "#"
+)}
+</td>
+
+<td>${epicStatusBadge(item["Epic Status"] || "")}</td>
+
+<td>${item["Owner Name"] || ""}</td>
+</tr>
+        `;
+    });
+
+    document.getElementById("roadmapTable").innerHTML = html;
+}
+
+function addOptions(id,list){
+
+    const ddl = document.getElementById(id);
+
+    list.forEach(x => {
+
+        let opt = document.createElement("option");
+        opt.value = x;
+        opt.text = x;
+
+        ddl.appendChild(opt);
+
+    });
+}
+
+function populateFilters(){
+
+    addOptions(
+        "domainFilter",
+        [...new Set(roadmapData.map(x => x["L1 Domain"]).filter(Boolean))]
+    );
+
+    addOptions(
+        "groupFilter",
+        [...new Set(roadmapData.map(x => x["L2 Capability Group"]).filter(Boolean))]
+    );
+    addOptions(
+    "capabilityFilter",
+    [...new Set(roadmapData.map(x => x["L3 Capability"]).filter(Boolean)
+    )]
+);
+
+    addOptions(
+        "priorityFilter",
+        [...new Set(roadmapData.map(x => x["Priority"]).filter(Boolean))]
+    );
+
+    addOptions(
+        "waveFilter",
+        [...new Set(roadmapData.map(x => x["Implementation Wave"]).filter(Boolean))]
+    );
+
+    addOptions(
+        "ownerFilter",
+        [...new Set(roadmapData.map(x => x["Owner Name"]).filter(Boolean))]
+     );
+
+}
+
+function applyFilters(){
+
+    const domain =
+        document.getElementById("domainFilter").value;
+
+    const group =
+        document.getElementById("groupFilter").value;
+
+    const priority =
+        document.getElementById("priorityFilter").value;
+
+    const wave =
+        document.getElementById("waveFilter").value;
+
+    const capability =
+    document.getElementById("capabilityFilter").value;
+
+    const owner =
+    document.getElementById("ownerFilter").value;
+
+    const search =
+        document.getElementById("searchBox")
+        .value
+        .toLowerCase();
+
+    const filtered =
+        roadmapData.filter(item =>
+
+            (domain === "" || item["L1 Domain"] === domain)
+            &&
+            (group === "" || item["L2 Capability Group"] === group)
+            &&
+            (priority === "" || item["Priority"] === priority)
+&&
+(wave === "" || item["Implementation Wave"] === wave)
+&&
+(capability === "" || item["L3 Capability"] === capability)
+&&
+(owner === "" || item["Owner Name"] === owner)
+&&
+(
+                JSON.stringify(item)
+                .toLowerCase()
+                .includes(search)
+            )
+
+        );
+
+    render(filtered);
+
+}
+
+function loadCSV(){
+
+Papa.parse(
+"https://raw.githubusercontent.com/anupraliegh2026/enterprise-oms-roadmap/main/Capability_Master.csv",
+{
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+
+    complete: function(results){
+
+        roadmapData = results.data;
+
+        populateFilters();
+
+        render(results.data);
+
+        console.log(
+            "Rows Loaded:",
+            results.data.length
+        );
+
+    },
+
+    error: function(error){
+
+        console.error(error);
+
+    }
+
+});
+
+}
+
+loadCSV();
+
+document.addEventListener(
+    "change",
+    applyFilters
+);
+
+document
+.getElementById("searchBox")
+.addEventListener(
+    "keyup",
+    applyFilters
+);
+
+</script>
+</body>
+</html>
