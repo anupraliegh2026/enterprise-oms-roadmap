@@ -299,6 +299,12 @@ function applyFilters(){
     const wave =
         document.getElementById("waveFilter").value;
 
+    const capability =
+    document.getElementById("capabilityFilter").value;
+
+    const owner =
+    document.getElementById("ownerFilter").value;
+
     const search =
         document.getElementById("searchBox")
         .value
@@ -312,10 +318,14 @@ function applyFilters(){
             (group === "" || item["L2 Capability Group"] === group)
             &&
             (priority === "" || item["Priority"] === priority)
-            &&
-            (wave === "" || item["Implementation Wave"] === wave)
-            &&
-            (
+&&
+(wave === "" || item["Implementation Wave"] === wave)
+&&
+(capability === "" || item["L3 Capability"] === capability)
+&&
+(owner === "" || item["Owner Name"] === owner)
+&&
+(
                 JSON.stringify(item)
                 .toLowerCase()
                 .includes(search)
