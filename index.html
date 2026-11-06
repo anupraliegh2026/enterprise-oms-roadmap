@@ -204,7 +204,9 @@ function render(rows){
 <td>${item["L2 Capability Group"] || ""}</td>
 <td>${item["L3 Capability"] || ""}</td>
 <td>${item["L4 Process Step"] || ""}</td>
-<td>${item["L5 System Activity"] || ""}</td>
+<td title="${item["L5 System Activity"] || ""}">
+${(item["L5 System Activity"] || "").substring(0,40)}...
+</td>
 <td>${item["Priority"] || ""}</td>
 <td>${item["Implementation Wave"] || ""}</td>
 <td>${badge(item["Readiness Category"] || "")}</td>
