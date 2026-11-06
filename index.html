@@ -255,23 +255,30 @@ return '';
    const ticketList =
     ticket.match(/OMS2-\d+/g) || [ticket];
 
-return ticketList.map(t => `
-    <span style="display:inline-block;margin:2px;">
-        <a
-            href="${jiraUrl}"
-            target="_blank"
-            class="${cssClass}"
-            style="
-                text-decoration:none;
-                color:black;
-                font-weight:bold;
-                display:inline-block;
-            "
-        >
-            ${t}
-        </a>
-    </span>
-`).join("");
+return `
+<div style="
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    max-width:220px;
+">
+${ticketList.map(t => `
+    <a
+        href="${jiraUrl}"
+        target="_blank"
+        class="${cssClass}"
+        style="
+            text-decoration:none;
+            color:black;
+            font-weight:bold;
+            display:inline-block;
+        "
+    >
+        ${t}
+    </a>
+`).join("")}
+</div>
+`;
 }
 
 function render(rows){
