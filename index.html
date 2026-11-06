@@ -259,7 +259,9 @@ return '';
             class="${cssClass}"
             style="text-decoration:none;color:black;font-weight:bold;"
         >
-            ${ticket}
+            ${ticket
+   .match(/OMS2-\d+/g)
+   ?.join("<br>") || ticket}
         </a>
     `;
 }
@@ -278,10 +280,7 @@ function render(rows){
 <td>${item["L4 Process Step"] || ""}</td>
 <td title="${item["L5 System Activity"] || ""}">
 ${
-(item["L5 System Activity"] || "").length > 40
-? (item["L5 System Activity"] || "").substring(0,40) + "..."
-: (item["L5 System Activity"] || "")
-}
+${item["L5 System Activity"] || ""}
 </td>
 <td>${item["Priority"] || ""}</td>
 <td>${item["Implementation Wave"] || ""}</td>
