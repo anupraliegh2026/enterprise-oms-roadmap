@@ -258,6 +258,11 @@ function populateFilters(){
         "groupFilter",
         [...new Set(roadmapData.map(x => x["L2 Capability Group"]).filter(Boolean))]
     );
+    addOptions(
+    "capabilityFilter",
+    [...new Set(roadmapData.map(x => x["L3 Capability"]).filter(Boolean)
+    )]
+);
 
     addOptions(
         "priorityFilter",
