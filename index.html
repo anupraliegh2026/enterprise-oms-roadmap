@@ -159,21 +159,26 @@ function render(rows){
     rows.forEach(item => {
 
         html += `
-        <tr>
-            <td>${item["Capability ID"] || ""}</td>
-            <td>${item["L1 Domain"] || ""}</td>
-            <td>${item["L2 Capability Group"] || ""}</td>
-            <td>${item["L3 Capability"] || ""}</td>
-            <td>${item["Priority"] || ""}</td>
-            <td>${item["Implementation Wave"] || ""}</td>
-            <td>${item["Owner Name"] || ""}</td>
-            <td>
-                <a href="${item["Jira URL"] || "#"}" target="_blank">
-                    ${item["Epic #"] || ""}
-                </a>
-            </td>
-            <td>${badge(item["Readiness Category"])}</td>
-        </tr>
+      <tr>
+<td>${item["L1 Domain"] || ""}</td>
+<td>${item["L2 Capability Group"] || ""}</td>
+<td>${item["L3 Capability"] || ""}</td>
+<td>${item["L4 Process Step"] || ""}</td>
+<td>${item["L5 System Activity"] || ""}</td>
+<td>${item["Priority"] || ""}</td>
+<td>${item["Implementation Wave"] || ""}</td>
+<td>${badge(item["Readiness Category"] || "")}</td>
+
+<td>
+<a href="${item["Jira URL"] || "#"}" target="_blank">
+${item["Epic #"] || ""}
+</a>
+</td>
+
+<td>${item["Epic Status"] || ""}</td>
+
+<td>${item["Owner Name"] || ""}</td>
+</tr>
         `;
     });
 
