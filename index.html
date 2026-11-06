@@ -206,14 +206,18 @@ function badge(status){
     }
 
     if(value.includes("to do")){
-        return '<span class="discovery">To Do</span>';
-    }
+    return '<span class="discovery">To Do</span>';
+}
 
-    return '';
+if(value.includes("awaiting approval")){
+    return '<span class="progress">Awaiting Approval</span>';
+}
+
+return '';
 
 }
 
-    function jiraTicketBadge(ticket,status){
+    function jiraTicketBadge(ticket,status,jiraUrl){
 
     if(
     !ticket ||
@@ -250,12 +254,12 @@ function badge(status){
 
     return `
         <a
-            href="${ticket}"
+            href="${jiraUrl}"
             target="_blank"
             class="${cssClass}"
             style="text-decoration:none;color:black;font-weight:bold;"
         >
-            ${ticket.split('/').pop()}
+            ${ticket}
         </a>
     `;
 }
@@ -273,7 +277,11 @@ function render(rows){
 <td>${item["L3 Capability"] || ""}</td>
 <td>${item["L4 Process Step"] || ""}</td>
 <td title="${item["L5 System Activity"] || ""}">
-${(item["L5 System Activity"] || "").substring(0,40)}...
+${
+(item["L5 System Activity"] || "").length > 40
+? (item["L5 System Activity"] || "").substring(0,40) + "..."
+: (item["L5 System Activity"] || "")
+}
 </td>
 <td>${item["Priority"] || ""}</td>
 <td>${item["Implementation Wave"] || ""}</td>
@@ -281,8 +289,9 @@ ${(item["L5 System Activity"] || "").substring(0,40)}...
 
 <td>
 ${jiraTicketBadge(
-    item["Jira URL"] || "#",
-    item["Epic Status"] || ""
+    item["Epic #"] || "",
+    item["Epic Status"] || "",
+    item["Jira URL"] || "#"
 )}
 </td>
 
