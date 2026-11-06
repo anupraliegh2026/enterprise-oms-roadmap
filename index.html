@@ -252,15 +252,26 @@ return '';
         cssClass = "progress";
     }
 
-    return `
+   const ticketList =
+    ticket.match(/OMS2-\d+/g) || [ticket];
+
+return ticketList.map(t => `
+    <div style="margin:2px 0;">
         <a
             href="${jiraUrl}"
             target="_blank"
             class="${cssClass}"
-            style="text-decoration:none;color:black;font-weight:bold;"
+            style="
+                text-decoration:none;
+                color:black;
+                font-weight:bold;
+                display:inline-block;
+            "
         >
-            ${ticket}
+            ${t}
         </a>
+    </div>
+`).join("");
     `;
 }
 
