@@ -201,6 +201,45 @@ function badge(status){
 
 }
 
+    function jiraTicketBadge(ticket,status){
+
+    if(!ticket){
+        return "";
+    }
+
+    let cssClass = "discovery";
+
+    const value =
+        (status || "").toLowerCase();
+
+    if(value.includes("closed")){
+        cssClass = "ready";
+    }
+    else if(value.includes("in progress")){
+        cssClass = "progress";
+    }
+    else if(value.includes("backlog")){
+        cssClass = "discovery";
+    }
+    else if(value.includes("to do")){
+        cssClass = "discovery";
+    }
+    else if(value.includes("awaiting approval")){
+        cssClass = "progress";
+    }
+
+    return `
+        <a
+            href="${ticket}"
+            target="_blank"
+            class="${cssClass}"
+            style="text-decoration:none;color:black;font-weight:bold;"
+        >
+            ${ticket.split('/').pop()}
+        </a>
+    `;
+}
+
 function render(rows){
 
     let html = "";
