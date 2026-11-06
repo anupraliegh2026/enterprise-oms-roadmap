@@ -154,6 +154,33 @@ function badge(status){
 
     return '<span class="discovery">Discovery</span>';
 }
+    function epicStatusBadge(status){
+
+    if(!status){
+        return "";
+    }
+
+    const value = status.toLowerCase();
+
+    if(value.includes("closed") || value.includes("done")){
+        return '<span class="ready">Closed</span>';
+    }
+
+    if(value.includes("in progress")){
+        return '<span class="progress">In Progress</span>';
+    }
+
+    if(value.includes("backlog")){
+        return '<span class="discovery">Backlog</span>';
+    }
+
+    if(value.includes("to do")){
+        return '<span class="discovery">To Do</span>';
+    }
+
+    return status;
+
+}
 
 function render(rows){
 
@@ -178,7 +205,7 @@ ${item["Epic #"] || ""}
 </a>
 </td>
 
-<td>${item["Epic Status"] || ""}</td>
+<td>${epicStatusBadge(item["Epic Status"] || "")}</td>
 
 <td>${item["Owner Name"] || ""}</td>
 </tr>
